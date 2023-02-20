@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import colorama
+from colorama import Fore, Back, Style, Cursor
+
+from Lib_Mastermind import *
 
 # Игра «Быки и коровы»
 # https://goo.gl/Go2mb9
@@ -19,8 +23,6 @@
 #
 # Формат ответа компьютера
 # > быки - 1, коровы - 1
-
-
 # Составить отдельный модуль mastermind_engine, реализующий функциональность игры.
 # В этом модуле нужно реализовать функции:
 #   загадать_число()
@@ -42,5 +44,10 @@
 # Движок игры реализует только саму функциональность игры.
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
-
-# TODO здесь ваш код...
+colorama.init()
+print(Fore.YELLOW + 'Начинаем игру!')
+init_game()
+while True:
+    number = input(f"{Fore.RED}Введите ваш вариант из{Fore.CYAN} 4 {Fore.RED}цифр \n")
+    check_number(number=number)
+    if game_over()
