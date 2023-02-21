@@ -7,13 +7,14 @@ next_number = None
 
 
 def init_game():
-    global _number
+    global _number, _num_of_mov
+    _num_of_mov = 0
     _number = ''
     _number = _number + str(randint(1, 9))
     while len(_number) < 4:
         next_number = str(randint(0, 9))
         _number = _number if _number.find(next_number) >= 0 else _number + next_number
-    print(_number)
+    # print(_number)
 
 
 def check_number(number):
