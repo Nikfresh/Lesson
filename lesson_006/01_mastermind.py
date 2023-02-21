@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import colorama
-from colorama import Fore, Back, Style, Cursor
+from colorama import Fore
 
 from Lib_Mastermind import *
 
@@ -48,6 +48,15 @@ colorama.init()
 print(Fore.YELLOW + 'Начинаем игру!')
 init_game()
 while True:
-    number = input(f"{Fore.RED}Введите ваш вариант из{Fore.CYAN} 4 {Fore.RED}цифр \n")
-    check_number(number=number)
-    if game_over()
+
+    number = input(f"{Fore.RED}Введите ваш вариант из{Fore.CYAN} 4 {Fore.RED}цифр: ")
+    bulls,cow,stat = check_number(number=number)
+    if stat :
+        print(f"Быки - {bulls}, коровы {cow}")
+    else:print('Попытка неудачна, попробуйте еще.')
+    if game_over(number=number):
+        print(f'Поздравляем! Число разгадано за {number_of_moves()} попыток.\n Хотите еще партию?')
+        if input()!='':
+            init_game()
+        else: break
+
