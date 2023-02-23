@@ -14,7 +14,6 @@ def init_game():
     while len(_number) < 4:
         next_number = str(randint(0, 9))
         _number = _number if _number.find(next_number) >= 0 else _number + next_number
-    # print(_number)
 
 
 def check_number(number):
