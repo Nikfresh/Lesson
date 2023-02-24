@@ -6,10 +6,10 @@ from termcolor import cprint
 class House:
     """Дом"""
 
-    def __init__(self):
+    def __init__(self,name = 'бездомный'):
         self.food = 10
         self.money = 100000
-        self.name = 'Домищще'
+        self.name = name
 
     def __str__(self):
         return f"Дом - {self.name}, еды осталось - {self.food}, денег есть - {self.money}"
@@ -74,14 +74,15 @@ class Man:
             self.house = home
             print(f"{self.name} заехал в {self.house.name}")
             self.fullness -= 10
-            self.house.money += self.money
+            home.money += self.money
             self.money = home.money
+            print(f'id self.money  {self.name} its = {id(self.money)}====id self.house.money  {self.name} its = {id(self.house.money)}')
         else: cprint(f"{self.name} уже живет в {self.house.name} ему не надо заселяться снова",color='red')
 
 
 bivis = Man('Бивис')
 budhead = Man('Бадхед')
-home_for_man = House()
+home_for_man = House('ДОМЯРА')
 # print(bivis)
 # bivis.go_in_house(home=home_for_man)
 # print(bivis)
