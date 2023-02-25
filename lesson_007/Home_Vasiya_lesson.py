@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 
 from termcolor import cprint
 
@@ -6,7 +6,7 @@ from termcolor import cprint
 class House:
     """Дом"""
 
-    def __init__(self,name = 'бездомный'):
+    def __init__(self, name='бездомный'):
         self.food = 100
         self.money = 50
         self.name = name
@@ -38,7 +38,7 @@ class Man:
             return False
 
     def work(self):
-        cprint(f"{self.name} сходил на работу",color='cyan')
+        cprint(f"{self.name} сходил на работу", color='cyan')
         self.house.money += 50
         self.fullness -= 10
 
@@ -76,25 +76,25 @@ class Man:
     def go_in_house(self, home):
         if self.house.name == "бездомный":
             self.house = home
-            cprint(f"{self.name} заехал в {self.house.name}",color='cyan')
+            cprint(f"{self.name} заехал в {self.house.name}", color='cyan')
             self.fullness -= 10
-        else: cprint(f"{self.name} уже живет в {self.house.name} ему не надо заселяться снова",color='red')
+        else:
+            cprint(f"{self.name} уже живет в {self.house.name} ему не надо заселяться снова", color='red')
 
 
-bivis = Man('Бивис')
-budhead = Man('Бадхед')
+citizens = [Man('Бадхед'), Man('Бивис'), Man('Егорик')]
 home_for_man = House('ДОМЯРА')
-bivis.go_in_house(home=home_for_man)
-budhead.go_in_house(home=home_for_man)
+for citizen in citizens:
+    citizen.go_in_house(home=home_for_man)
+# bivis.go_in_house(home=home_for_man)
+# budhead.go_in_house(home=home_for_man)
+print(list(range(1,len(citizens)+1)))
+shuffle_list_of_citizens = (list(range(0,len(citizens))))
 for day in range(1, 100):
-    who_first = randint(1,2)
+    shuffle(shuffle_list_of_citizens)
     print(f"=================День {day}=================", )
-    if who_first == 1:
-        bivis.act()
-        budhead.act()
-    else:
-        budhead.act()
-        bivis.act()
-    print(bivis)
-    print(budhead)
+    for i in shuffle_list_of_citizens:
+        citizens[i].act()
+    for i in citizens:
+        print(i)
     print(home_for_man)
