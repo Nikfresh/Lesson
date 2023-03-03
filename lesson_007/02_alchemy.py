@@ -35,7 +35,7 @@ class Dust:
         pass
 
     def __str__(self):
-        return colored("Пыль",color= 'green',on_color= 'on_white')
+        return colored("Пыль",color= 'green')
 
 
 class Flash:
