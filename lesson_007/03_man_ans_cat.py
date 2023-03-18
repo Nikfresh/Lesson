@@ -31,7 +31,7 @@ class Cat:
 
     def __str__(self):
         if self.live == True:
-            return f"{self.name}, сытость - {self.fullness}, живет в  - {self.house.name}"
+            return f'А это {self.name} сытость {self.fullness}, еды в чашке у него {self.house.bowl}, а грязи вокруг {self.house.dirt}'
         else:
             return f"{self.name}, СДОХ в  - {self.house.name}"
 
@@ -47,6 +47,7 @@ class Cat:
         if self.house.bowl >= 10:
             self.fullness += 20
             self.house.bowl -= 10
+            cprint(f"{self.name} поел корму.",color='green')
         else:
             cprint('Нет еды для кошек!!!',color='red',on_color='on_yellow')
 
@@ -61,9 +62,11 @@ class Cat:
         elif dise == 3:
             self.sleep()
 
+
     def game(self):
         self.fullness -= 10
         self.house.dirt += 5
+        cprint(f'{self.name} Играл с клубком и драл обои.', color='green', )
 
     def sleep(self):
         self.fullness -= 10
@@ -111,7 +114,7 @@ class Man:
             return False
 
     def cleaning(self):
-        self.house.dirt -= 100
+        self.house.dirt -= 100 if self.house.dirt > 100 else 0
         self.fullness -= 20
         cprint(f'{self.name} прибрался в доме.', color='yellow', on_color='on_blue')
 
@@ -175,17 +178,21 @@ class Man:
 # Человеку и коту надо вместе прожить 365 дней.
 
 citizens = [Man('Бадхед'), Man('Бивис'), Man('Егорик')]
+cat = Cat('Мурзик')
 home_for_man = House('ДОМЯРА')
 for citizen in citizens:
     citizen.go_in_house(home=home_for_man)
 shuffle_list_of_citizens = (list(range(0, len(citizens))))
-for day in range(1, 100):
+citizens[randint(0,len(citizens)-1)].got_a_cat(cat)
+for day in range(1, 50):
     shuffle(shuffle_list_of_citizens)
     print(f"=================День {day}=================", )
     for i in shuffle_list_of_citizens:
         citizens[i].act()
+    cat.act()
     for i in citizens:
         print(i)
+    cprint(cat,color='blue')
     print(home_for_man)
 
 # Усложненное задание (делать по желанию)
