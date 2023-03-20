@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from termcolor import cprint
+from termcolor import cprint, colored
 from random import randint
 
 ######################################################## Часть первая
