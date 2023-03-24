@@ -3,6 +3,7 @@
 from termcolor import cprint, colored
 from random import randint
 
+
 ######################################################## Часть первая
 #
 # Создать модель жизни небольшой семьи.
@@ -44,14 +45,43 @@ from random import randint
 
 class House:
 
-    def __init__(self):
-        pass
+    def __init__(self, name='Дом'):
+        self.name = name
+        self.food = 50
+        self.money = 100
+        self.mud = 0
+
+    def __str__(self):
+        return colored(f'{self.name} еда {self.food} грязь {self.mud} деньги {self.money}', color='yellow')
+
+    def act(self):
+        self.mud += 5
 
 
-class Husband:
+class Life_form:
+    all_food_eating = 0
 
-    def __init__(self):
-        pass
+    def __init__(self, name, home):
+        self.name = name
+        self.home = home
+        self.fullness = 30
+        self.happiness = 100
+        self.status = 1
+
+    def __str__(self):
+        return colored(f'{self.name} сытость {self.fullness} счастье {self.happiness}', color='yellow')
+
+    def eat(self):
+        food = randint(15, 30)
+        self.fullness += food
+        self.home.food -= food
+        cprint(f'{self.name} поел(а) {food} еды', color='green')
+
+
+class Husband(Life_form):
+
+    def __init__(self, name, home):
+        super().__init__(name, home)
 
     def __str__(self):
         return super().__str__()
@@ -60,19 +90,23 @@ class Husband:
         pass
 
     def eat(self):
-        pass
+        super().eat()
 
     def work(self):
-        pass
+        self.fullness -= 10
+        self.home.money += 150
+        cprint(f'{self.name} сходил на работу', color='blue')
 
     def gaming(self):
-        pass
+        self.fullness -= 10
+        self.happiness += 20
+        cprint(f'{self.name} поиграл в Танки', color='cyan')
 
 
-class Wife:
+class Wife(Life_form):
 
-    def __init__(self):
-        pass
+    def __init__(self, name, home):
+        super().__init__(name, home)
 
     def __str__(self):
         return super().__str__()
@@ -81,24 +115,45 @@ class Wife:
         pass
 
     def eat(self):
-        pass
+        super().eat()
 
     def shopping(self):
-        pass
+        food = randint(100,200)
+        self.fullness -= 10
+        self.home.money -= food
+        self.home.food += food
+        cprint(f'{self.name} сходила в магазин купила {food} еды', color='cyan')
 
     def buy_fur_coat(self):
-        pass
+        self.fullness -= 10
+        self.happiness += 60
+        self.home.money -= 350
+        cprint(f'{self.name} сходила в магазин купила шубу', color='cyan')
 
     def clean_house(self):
-        pass
+        mud = randint(50,100)
+        self.fullness -= 10
+        self.home.mud -= mud
+        cprint(f'{self.name} прибралась дома, почистила {mud} грязи', color='cyan')
 
 
 home = House()
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-
+serge = Husband(name='Сережа', home=home)
+print(serge)
+masha = Wife(name='Маша', home=home)
+print(masha)
+print(home)
+serge.eat()
+masha.eat()
+serge.work()
+print(home)
+serge.gaming()
+print(serge)
+print(home)
+"""
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
+    home.act()
     serge.act()
     masha.act()
     cprint(serge, color='cyan')
@@ -229,3 +284,4 @@ for day in range(365):
 #           max_cats = life.experiment(salary)
 #           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
 
+"""
