@@ -241,12 +241,12 @@ class Wife(Life_form):
         if self.fullness < 11:
             eating = self.eat()
             if not eating:
-                self.act()
+                self.clean_house()
         elif self.home.food < 30:
             self.shopping()
         elif self.home.food_pet < 10:
             self.shopping_cat()
-        elif self.home.mud > 90:
+        elif self.home.mud > 80:
             self.clean_house()
         elif self.happiness <= 10:
             self.buy_fur_coat()
@@ -304,6 +304,7 @@ class Cat(Life_form):
         self.happiness += 10
         cprint(f'{self.name} драл обои', color='cyan')
 
+
 class Child(Life_form):
 
     def __init__(self, name, home):
@@ -333,13 +334,16 @@ class Child(Life_form):
 
     def sleep(self):
         cprint(f'{self.name} проспал весь день')
+
+
 def who_dead(home):
     if isinstance(home, House):
         for i in range(0, len(home.residents)):
             resident = home.residents[i]
             if resident.status == 0:
                 print('dead')
-                return True
+                return resident.name
+
 
         return False
     else:
@@ -348,38 +352,37 @@ def who_dead(home):
 
 home = House()
 serge = Husband(name='Сережа', home=home)
-print(serge)
 masha = Wife(name='Маша', home=home)
+child = Child(name='Вовчик', home=home)
+cats = []
+for i in range(1, 4):
+    cats.append(Cat(name=f'Мурзик{i}', home=home))
+print(serge)
+print(child)
 print(masha)
 print(home)
-print(cat)
+for cat in cats:
+    print(cat)
 
 # """
 for day in range(1, 365):
-    if who_dead(home):
-        cprint('_________________мертвяк в доме________________', color='yellow', attrs=['reverse'])
-        break
-child = Child(name='Вовчик', home=home)
-print(child)
-print(home)
-
-# """
-for day in range(1, 365):
-    if who_dead(home):
-        cprint('_________________мертвяк в доме________________', color='yellow', attrs=['reverse'])
+    dead = who_dead(home)
+    if dead:
+        cprint(f'_________________мертвяк в доме________________{dead}', color='yellow', attrs=['reverse'])
         break
     cprint('================== День {} =================='.format(day), color='red')
     home.act()
-    cat.act()
-    serge.act()
     masha.act()
+    serge.act()
     child.act()
+    for cat in cats:
+        cat.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
-    cprint(cat, color='cyan')
     cprint(child, color='cyan')
+    for cat in cats:
+        cprint(cat, color='cyan')
     cprint(home, color='cyan')
-
 
 cprint(f'{Life_form.all_food_eating} съели всего еды')
 cprint(f'{Life_form.all_money_off} потрачено денег всего в магазине')
