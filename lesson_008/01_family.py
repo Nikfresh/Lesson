@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from termcolor import cprint, colored
-from random import randint
+from random import randint, choice
 
 
 ######################################################## Часть первая
@@ -48,16 +48,19 @@ class House:
     def __init__(self, name='Дом'):
         self.name = name
         self.food = 50
+        self.food_pet = 30
         self.money = 100
         self.mud = 0
         self.residents = []
+        self.pets = []
 
     def __str__(self):
         residents = ''
         for i in range(0, len(self.residents)):
             residents += ' ' + self.residents[i].name
-        return colored(f'{self.name} еда {self.food} грязь {self.mud} деньги {self.money} жители{residents}',
-                       color='yellow')
+        return colored(
+            f'{self.name} еда {self.food} еда кота {self.food_pet} грязь {self.mud} деньги {self.money} жители{residents}',
+            color='yellow')
 
     def act(self):
         if self.mud > 90:
@@ -69,6 +72,8 @@ class House:
 
 class Life_form:
     all_food_eating = 0
+    all_money_off = 0
+    all_money_wokr = 0
 
     def __init__(self, name, home):
         self.name = name
@@ -82,33 +87,59 @@ class Life_form:
         return colored(f'{self.name} сытость {self.fullness} счастье {self.happiness}', color='yellow')
 
     def eat(self, max_eat=30, multiply=1):
+        if isinstance(self, Cat):
+            if self.home.food_pet <= 0:
+                cprint(f'{self.name} хочет поесть но еды нет ', color='red')
+                self.status = 0 if self.fullness <= 0 else 1
+                return False
         if self.home.food <= 0:
             cprint(f'{self.name} хочет поесть но еды нет ', color='red')
-            self.status = 0
-            return
+            self.status = 0 if self.fullness <= 0 else 1
+            return False
+        if isinstance(self, Cat):
+            food_pet_house = self.home.food_pet
+            food = randint(max_eat / 2, max_eat) if food_pet_house >= max_eat else food_pet_house
+            self.fullness += food * multiply
+            self.home.food_pet -= food
+            cprint(f'{self.name} поел(а) {food} еды', color='green')
+            Life_form.all_food_eating += food
+            return True
         food_house = self.home.food
         food = randint(max_eat / 2, max_eat) if food_house >= max_eat else food_house
-        self.fullness += food * multiply
-        Life_form.all_food_eating += food
+        self.fullness += food
         self.home.food -= food
+        Life_form.all_food_eating += food
         cprint(f'{self.name} поел(а) {food} еды', color='green')
+        return True
 
 
 class Husband(Life_form):
 
-    # def __init__(self, name, home):
-    #     super().__init__(name, home)
+    def shopping_cat(self):
+        if self.home.money <= 0:
+            cprint(f'{self.name} хотел сходить в магазин за едой для кота но денег нет, пошел работать')
+            self.work()
+            return
+        food = randint(100, 200)
+        self.fullness -= 10
+        if self.home.money <= food:
+            food = self.home.money
+        self.home.money -= food
+        self.home.food_pet += food
+        Life_form.all_money_off += food
 
-    # def __str__(self):
-    #     return super().__str__()
-
-    # def eat(self):
-    #     super().eat()
+        cprint(f'{self.name} сходил в магазин купил {food} еды для кота', color='cyan')
 
     def work(self):
         self.fullness -= 10
         self.home.money += 150
+        Life_form.all_money_wokr += 150
         cprint(f'{self.name} сходил на работу', color='blue')
+
+    def caress_cat(self):
+        self.happiness += 5
+        self.fullness -= 10
+        cprint(f'{self.name} весь день гладила кота и наслаждался', color='yellow')
 
     def gaming(self):
         self.fullness -= 10
@@ -116,12 +147,15 @@ class Husband(Life_form):
         cprint(f'{self.name} поиграл в Танки', color='cyan')
 
     def act(self):
-        rand = randint(1, 5)
+        rand = randint(1, 6)
         if self.status == 0:
             cprint(f'{self.name}  - !!!ТРУП!!!', color="red", attrs=['reverse'])
             return
         if self.fullness < 11:
-            self.eat()
+            eating = self.eat()
+            if not eating:
+                self.gaming()
+
         elif self.home.money < 30:
             self.work()
         elif self.happiness < 10:
@@ -131,7 +165,11 @@ class Husband(Life_form):
                 self.eat()
             elif rand == 2:
                 self.work()
-            elif rand > 2:
+            elif rand == 3:
+                self.shopping_cat()
+            elif rand == 4:
+                self.caress_cat()
+            elif rand > 4:
                 self.gaming()
         if self.fullness <= 0 or self.happiness < 10:
             self.status = 0
@@ -139,19 +177,29 @@ class Husband(Life_form):
 
 class Wife(Life_form):
 
-    # def __init__(self, name, home):
-    #     super().__init__(name, home)
-
-    # def __str__(self):
-    #     return super().__str__()
-
-    # def eat(self):
-    #     super().eat()
-
     def gaming(self):
         self.fullness -= 10
         self.happiness += 20
         cprint(f'{self.name} поиграла в Танки', color='cyan')
+
+    def shopping_cat(self):
+        if self.home.money <= 0:
+            cprint(f'{self.name} хотела сходить в магазин за едой для кота но денег нет, наелась с горя')
+            self.eat()
+            return
+        food = randint(100, 200)
+        self.fullness -= 10
+        if self.home.money <= food:
+            food = self.home.money
+        self.home.money -= food
+        self.home.food_pet += food
+        Life_form.all_money_off += food
+        cprint(f'{self.name} сходила в магазин купила {food} еды для кота', color='cyan')
+
+    def caress_cat(self):
+        self.happiness += 5
+        self.fullness -= 10
+        cprint(f'{self.name} весь день гладила кота и наслаждалась', color='green')
 
     def shopping(self):
         if self.home.money <= 0:
@@ -164,7 +212,7 @@ class Wife(Life_form):
             food = self.home.money
         self.home.money -= food
         self.home.food += food
-
+        Life_form.all_money_off += food
         cprint(f'{self.name} сходила в магазин купила {food} еды', color='cyan')
 
     def buy_fur_coat(self):
@@ -172,10 +220,12 @@ class Wife(Life_form):
             self.fullness -= 10
             self.happiness += 60
             self.home.money -= 350
+            Life_form.all_money_off += 350
             cprint(f'{self.name} сходила в магазин купила шубу', color='cyan')
         else:
-            cprint(f'{self.name} очень хочет повеселиться и купить шубу но денег нет и с горя наелась', color='red')
-            self.eat()
+            cprint(f'{self.name} очень хочет повеселиться и купить шубу но денег нет и с горя весь день гладила кота',
+                   color='red')
+            self.caress_cat()
 
     def clean_house(self):
         mud = randint(50, 100)
@@ -184,17 +234,21 @@ class Wife(Life_form):
         cprint(f'{self.name} прибралась дома', color='cyan')
 
     def act(self):
-        rand = randint(1, 6)
+        rand = randint(1, 7)
         if self.status == 0:
             cprint(f'{self.name}  - !!!ТРУП!!!', color="red", attrs=['reverse'])
             return
         if self.fullness < 11:
-            self.eat()
+            eating = self.eat()
+            if not eating:
+                self.act()
         elif self.home.food < 30:
             self.shopping()
+        elif self.home.food_pet < 10:
+            self.shopping_cat()
         elif self.home.mud > 90:
             self.clean_house()
-        elif self.happiness < 10:
+        elif self.happiness <= 10:
             self.buy_fur_coat()
         else:
             if rand == 1:
@@ -205,11 +259,50 @@ class Wife(Life_form):
                 self.buy_fur_coat()
             elif rand == 4:
                 self.eat()
-            elif rand > 4:
-                self.gaming()
+            elif rand == 5:
+                self.shopping_cat()
+            elif rand > 5:
+                self.caress_cat()
         if self.fullness <= 0 or self.happiness < 10:
             self.status = 0
 
+
+class Cat(Life_form):
+    def __init__(self, name, home):
+        super().__init__(name, home)
+        self.home.pets.append(self)
+
+    def act(self):
+        rand = randint(1, 3)
+        if self.status == 0:
+            cprint(f'{self.name}  - !!!ТРУП!!!', color="red", attrs=['reverse'])
+            return
+        if self.fullness < 11:
+            eating = self.eat()
+            if not eating:
+                self.sleep()
+        else:
+            if rand == 1:
+                self.sleep()
+            elif rand == 2:
+                self.soil()
+            elif rand == 3:
+                self.eat()
+        if self.fullness <= 0 or self.happiness < 10:
+            self.status = 0
+
+    # def eat(self):
+    #     pass
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint(f'{self.name} спал весь день', attrs=['reverse'])
+
+    def soil(self):
+        self.home.mud += 5
+        self.fullness -= 10
+        self.happiness += 10
+        cprint(f'{self.name} драл обои', color='cyan')
 
 class Child(Life_form):
 
@@ -253,12 +346,19 @@ def who_dead(home):
         return False
 
 
-
 home = House()
 serge = Husband(name='Сережа', home=home)
 print(serge)
 masha = Wife(name='Маша', home=home)
 print(masha)
+print(home)
+print(cat)
+
+# """
+for day in range(1, 365):
+    if who_dead(home):
+        cprint('_________________мертвяк в доме________________', color='yellow', attrs=['reverse'])
+        break
 child = Child(name='Вовчик', home=home)
 print(child)
 print(home)
@@ -270,13 +370,20 @@ for day in range(1, 365):
         break
     cprint('================== День {} =================='.format(day), color='red')
     home.act()
+    cat.act()
     serge.act()
     masha.act()
     child.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
+    cprint(cat, color='cyan')
     cprint(child, color='cyan')
     cprint(home, color='cyan')
+
+
+cprint(f'{Life_form.all_food_eating} съели всего еды')
+cprint(f'{Life_form.all_money_off} потрачено денег всего в магазине')
+cprint(f'{Life_form.all_money_wokr} заработано денег всего на работе')
 """
 # TODO после реализации первой части - отдать на проверку учителю
 
