@@ -81,14 +81,14 @@ class Life_form:
     def __str__(self):
         return colored(f'{self.name} сытость {self.fullness} счастье {self.happiness}', color='yellow')
 
-    def eat(self):
+    def eat(self, max_eat=30, multiply=1):
         if self.home.food <= 0:
             cprint(f'{self.name} хочет поесть но еды нет ', color='red')
             self.status = 0
             return
         food_house = self.home.food
-        food = randint(15, 30) if food_house >= 30 else food_house
-        self.fullness += food
+        food = randint(max_eat / 2, max_eat) if food_house >= max_eat else food_house
+        self.fullness += food * multiply
         Life_form.all_food_eating += food
         self.home.food -= food
         cprint(f'{self.name} поел(а) {food} еды', color='green')
@@ -96,11 +96,11 @@ class Life_form:
 
 class Husband(Life_form):
 
-    def __init__(self, name, home):
-        super().__init__(name, home)
+    # def __init__(self, name, home):
+    #     super().__init__(name, home)
 
-    def __str__(self):
-        return super().__str__()
+    # def __str__(self):
+    #     return super().__str__()
 
     # def eat(self):
     #     super().eat()
@@ -133,24 +133,25 @@ class Husband(Life_form):
                 self.work()
             elif rand > 2:
                 self.gaming()
-        if self.fullness <= 0:
+        if self.fullness <= 0 or self.happiness < 10:
             self.status = 0
 
 
 class Wife(Life_form):
 
-    def __init__(self, name, home):
-        super().__init__(name, home)
+    # def __init__(self, name, home):
+    #     super().__init__(name, home)
+
+    # def __str__(self):
+    #     return super().__str__()
+
+    # def eat(self):
+    #     super().eat()
 
     def gaming(self):
         self.fullness -= 10
         self.happiness += 20
         cprint(f'{self.name} поиграла в Танки', color='cyan')
-    def __str__(self):
-        return super().__str__()
-
-    # def eat(self):
-    #     super().eat()
 
     def shopping(self):
         if self.home.money <= 0:
@@ -204,10 +205,41 @@ class Wife(Life_form):
                 self.buy_fur_coat()
             elif rand == 4:
                 self.eat()
-            elif rand >4:
+            elif rand > 4:
                 self.gaming()
-        if self.fullness <= 0:
+        if self.fullness <= 0 or self.happiness < 10:
             self.status = 0
+
+
+class Child(Life_form):
+
+    def __init__(self, name, home):
+        super().__init__(name, home)
+        self.happiness = 100
+
+    # def __str__(self):
+    #     return super().__str__()
+
+    def act(self):
+        self.happiness = 100
+        rand = randint(0, 1)
+        if self.status == 0:
+            cprint(f'{self.name}  - !!!ТРУП!!!', color="red", attrs=['reverse'])
+            return
+        if self.fullness < 20:
+            self.eat()
+        if rand == 0:
+            self.sleep()
+        if rand == 1:
+            self.eat()
+        if self.fullness <= 0 or self.happiness < 10:
+            self.status = 0
+
+    def eat(self):
+        super().eat(max_eat=10, multiply=1)
+
+    def sleep(self):
+        cprint(f'{self.name} проспал весь день')
 
 
 home = House()
@@ -215,6 +247,8 @@ serge = Husband(name='Сережа', home=home)
 print(serge)
 masha = Wife(name='Маша', home=home)
 print(masha)
+child = Child(name='Вовчик', home=home)
+print(child)
 print(home)
 
 # """
@@ -223,8 +257,10 @@ for day in range(1, 365):
     home.act()
     serge.act()
     masha.act()
+    child.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
+    cprint(child, color='cyan')
     cprint(home, color='cyan')
 """
 # TODO после реализации первой части - отдать на проверку учителю
