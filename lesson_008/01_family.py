@@ -240,6 +240,18 @@ class Child(Life_form):
 
     def sleep(self):
         cprint(f'{self.name} проспал весь день')
+def who_dead(home):
+    if isinstance(home, House):
+        for i in range(0, len(home.residents)):
+            resident = home.residents[i]
+            if resident.status == 0:
+                print('dead')
+                return True
+
+        return False
+    else:
+        return False
+
 
 
 home = House()
@@ -253,6 +265,9 @@ print(home)
 
 # """
 for day in range(1, 365):
+    if who_dead(home):
+        cprint('_________________мертвяк в доме________________', color='yellow', attrs=['reverse'])
+        break
     cprint('================== День {} =================='.format(day), color='red')
     home.act()
     serge.act()
