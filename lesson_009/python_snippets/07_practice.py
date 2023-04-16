@@ -92,7 +92,7 @@ class Chatterer:
         return char
 
 
-chatterer = Chatterer(file_name='voyna-i-mir.txt.zip')
+chatterer = Chatterer(file_name='../voyna-i-mir.txt.zip')
 chatterer.collect()
 chatterer.prepare()
 chatterer.chat(N=10000, out_file_name='out.txt')
