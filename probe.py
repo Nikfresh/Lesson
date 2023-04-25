@@ -1,4 +1,4 @@
-class Man:
+'''class Man:
     def __init__(self, name):
         self.cash = [333]
         self.bankir = None
@@ -65,3 +65,11 @@ print('смотрим как связались методы кэш в ник и
 print(f'id cach-{nik.name}={id(nik.cash)}')
 print(f'id cach-{nik2.name} ={id(nik2.cash)}')
 print(f'id money-{bank.name}  ={id(bank.money)}')
+'''
+line = 'asdofin qirubsaдоышо шг т Ы ЫАЫВВЫКПЫП У '
+add = {}
+y = 1
+for x in line:
+    add[x] = len(line) + y
+    y += 1
+print(add)

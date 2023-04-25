@@ -6,7 +6,7 @@ from random import randint
 
 
 class Chatter:
-    analize_count = 4
+    analize_count = 5
 
     def __init__(self, file_name):
         self.file_name = file_name
@@ -96,7 +96,7 @@ class Chatter:
         return char
 
 
-file_name = 'voyna-i-mir.txt'
+file_name = 'voyna-i-mir.txt.zip'
 chatterer = Chatter(file_name=file_name)
 chatterer.collect()
 chatterer.prepare()
