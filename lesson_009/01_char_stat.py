@@ -76,14 +76,20 @@ class Statistic_creator:
 
     def print_stat_123_up(self):
         self._prepare_123()
-        self.stat_abc.sort(reverse=True)
-        for char, quant in self.stat_abc.items():
-        self.stat_abc = [char, quant]
+        self.stat_123.sort(reverse=True)
+        self._changing_places()
         self._print_stat()
+
+    def _changing_places(self):
+        self.stat_abc = []
+        for quant, char in self.stat_123:
+            self.stat_abc.append([char, quant])
+
 
     def print_stat_123_down(self):
         self._prepare_123()
-        self.stat_abc.sort()
+        self.stat_123.sort()
+        self._changing_places()
         self._print_stat()
 
     def _print_stat(self):
@@ -100,15 +106,16 @@ class Statistic_creator:
         # pprint(self.stat_abc)
 
     def _prepare_123(self):
-        self.stat_abc = []
+        self.stat_123 = []
         for char, quant in self.base_stat.items():
-            self.stat_abc.append([quant, char])
+            self.stat_123.append([quant, char])
 
 
 analise = Statistic_creator(file_name='voyna-i-mir.txt')
 analise.collect()
-analise.print_stat()
-analise.print_stat_123_up()
+# analise.print_stat()
+analise.print_stat_abs_down()
+# analise.print_stat_123_down()
 
 # После выполнения первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
