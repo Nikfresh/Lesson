@@ -19,8 +19,41 @@
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
-# TODO здесь ваш код
+class Analizer_log:
 
+    def __init__(self, file_name):
+        self.file_name_read = file_name
+        self.file_name_save = 'out_stat_time.txt'
+        self.old_str = None
+        self.new_str = ''
+        self.quant = 0
+
+    def __str__(self):
+        return
+
+    def go_stat(self):
+        with open(self.file_name_read, 'r', encoding='utf8') as file_r:
+            for line in file_r:
+                self._counter(line=line)
+
+    def writer(self):
+        if self.old_str:
+            string = f'{self.old_str}] {self.quant}'
+            with open(self.file_name_save, 'a', encoding='utf8') as file_w:
+                file_w.write(string)
+
+    def _counter(self, line):
+        self.new_str = line[:20]
+        if self.new_str > self.old_str:
+            self.old_str = self.new_str
+            self.writer()
+            self.quant = 1
+            return
+
+
+x = '1234567890qwertyuiop'
+x = x[:10]
+print(x)
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
