@@ -34,9 +34,40 @@ import os, time, shutil
 # Чтение документации/гугла по функциям - приветствуется. Как и поиск альтернативных вариантов :)
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
-# TODO здесь ваш код
+import os
+import time
 
-# Усложненное задание (делать по желанию)
+
+class Organizing_photos:
+    def __init__(self, scan_folder='E:\\foto_all', out_folder='E:\\foto_sorted'):
+        self.scan_folder = scan_folder
+        self.out_folder = out_folder
+
+    def walk(self):
+        for address, dirs, files in os.walk(self.scan_folder):
+            for name in files:
+                path = os.path.join(address, name)
+                time = self.time_file(path)
+                new_path = os.path.join(self.out_folder, str(time[0]), str(time[1]))
+                # print(os.path.join(address, name),end=' ')
+                # print('YEAR =',time[0], 'MONTH =', time[1],  'DAY =', time[2])
+                self.copy_file(path,new_path)
+
+    def time_file(self, path):
+        secs = os.path.getmtime(path)
+        return time.gmtime(secs)
+
+    def copy_file(self, path,new_path):
+        if not os.path.isdir(new_path):
+            os.makedirs(new_path)
+        shutil.copy2(path, new_path)
+
+
+    # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
+
+
+org = Organizing_photos()
+org.walk()
