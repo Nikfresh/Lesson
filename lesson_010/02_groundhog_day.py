@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+from random import randint
+
 
 # День сурка
 #
@@ -17,8 +20,73 @@
 # При создании собственных исключений максимально использовать функциональность
 # базовых встроенных исключений.
 
-ENLIGHTENMENT_CARMA_LEVEL = 777
 
-# TODO здесь ваш код
+class IamGodError(Exception):
+    pass
 
-# https://goo.gl/JnsDqu
+
+class DrunkError(Exception):
+    pass
+
+
+class CarCrashError(Exception):
+    pass
+
+
+class GluttonyError(Exception):
+    pass
+
+
+class DepressionError(Exception):
+    pass
+
+
+class SuicideError(Exception):
+    pass
+
+
+def exepting():
+    exept = randint(1, 6)
+    if exept == 1:
+        raise IamGodError('Возомнил себя богом и испарился')
+    elif exept == 2:
+        raise DrunkError('Напился и сдох')
+    elif exept == 3:
+        raise CarCrashError('Разбился на тачке и сдох')
+    elif exept == 4:
+        raise GluttonyError('Обожрался и сдох')
+    elif exept == 5:
+        raise DepressionError('Cдох от депресии')
+    elif exept == 6:
+        raise SuicideError('Самоубился')
+    else:
+        raise Exception('Что-то не так в параметрах функции оня не должна никак попасть сюда!!!')
+
+
+def write_log(message):
+    with open(log, mode='a', encoding='utf8') as log_file:
+        message = str(datetime.now()) + ' ' + str(message) + '\n'
+        log_file.write(message)
+
+
+def one_day():
+    global Carma
+    act_day = randint(1, 13)
+    if act_day == 13:
+        try:
+            exepting()
+        except Exception as exc:
+            print(f'CRACH DEAD - причина {exc}')
+            write_log(exc)
+    else:
+        carma_day = randint(1, 7)
+        # print(f'Сегодня карма повысилась на - {carma_day} пунктов')
+        Carma += carma_day
+
+
+log = 'log_one_day.txt'
+ENLIGHTENMENT_CARMA_LEVEL = 7777
+Carma = 0
+while Carma < ENLIGHTENMENT_CARMA_LEVEL:
+    one_day()
+# https://goo.gl/JnsDq
