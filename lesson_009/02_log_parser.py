@@ -24,7 +24,7 @@ class Analizer_log:
     def __init__(self, file_name):
         self.file_name_read = file_name
         self.file_name_save = 'out_stat_time.txt'
-        self.old_str = None
+        self.old_str = ''
         self.new_str = ''
         self.quant = 0
 
@@ -38,22 +38,24 @@ class Analizer_log:
 
     def writer(self):
         if self.old_str:
-            string = f'{self.old_str}] {self.quant}'
+            string = f'{self.old_str}] {self.quant}\n'
             with open(self.file_name_save, 'a', encoding='utf8') as file_w:
                 file_w.write(string)
 
     def _counter(self, line):
-        self.new_str = line[:20]
+        self.new_str = line[:17]
         if self.new_str > self.old_str:
-            self.old_str = self.new_str
             self.writer()
-            self.quant = 1
+            self.old_str = self.new_str
+            self.quant = 0
+            return
+        elif 'NOK' in line:
+            self.quant+=1
             return
 
 
-x = '1234567890qwertyuiop'
-x = x[:10]
-print(x)
+log= Analizer_log(file_name='events.txt')
+log.go_stat()
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу

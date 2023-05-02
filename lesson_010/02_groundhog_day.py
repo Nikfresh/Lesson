@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from random import randint
+from time import sleep
 
 
 # День сурка
@@ -78,6 +79,7 @@ def one_day():
         except Exception as exc:
             print(f'CRACH DEAD - причина {exc}')
             write_log(exc)
+            sleep(1)
     else:
         carma_day = randint(1, 7)
         # print(f'Сегодня карма повысилась на - {carma_day} пунктов')
@@ -85,7 +87,7 @@ def one_day():
 
 
 log = 'log_one_day.txt'
-ENLIGHTENMENT_CARMA_LEVEL = 7777
+ENLIGHTENMENT_CARMA_LEVEL = 777
 Carma = 0
 while Carma < ENLIGHTENMENT_CARMA_LEVEL:
     one_day()
