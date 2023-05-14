@@ -12,6 +12,41 @@
 #
 # Нужно вычислить все операции и найти сумму их результата.
 
+
+ops = {
+    '*': lambda x, y: x * y,
+    '/': lambda x, y: x / y,
+    '+': lambda x, y: x + y,
+    '-': lambda x, y: x - y,
+    '//': lambda x, y: x // y,
+    '%': lambda x, y: x % y
+}
+
+
+def calculate(line):
+    operand1, operation, operand2 = line[:-1].split(sep=' ')
+    operand1, operand2 = int(operand1), int(operand2)
+    if operation in ops:
+        func = ops[operation]
+        value = func(operand1,operand2)
+    else:
+        raise ValueError ('Uncnow operand')
+    return value
+
+
+total = 0
+with open('calc.txt', 'r') as ff:
+    for line in ff:
+        try:
+            total += calculate(line)
+        except ValueError as exc:
+            if 'unpack' in exc.args[0]:
+                print(f'не хватает операнда"{line[:-1]}" ошибка {exc}')
+            else:
+                print(f'не преобразуемая строка"{line[:-1]}" ошибка {exc}')
+print(f'Total = {total}')
+
+"""
 ops = {
     '*': lambda x, y: x + y,
     '/': lambda x, y: x / y,
@@ -56,3 +91,4 @@ for line in get_lines(file_name='calc.txt'):
 
 print(f'Total {total}')
 
+"""
