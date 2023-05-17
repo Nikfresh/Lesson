@@ -32,11 +32,17 @@ def calculate(line):
     else:
         raise ValueError ('Uncnow operand')
     return value
-
+def get_lines(file_name):
+    with open(file_name, 'r') as ff:
+        for line in ff:
+            if not line:
+                continue
+            line = line[:-1]
+            yield line
 
 total = 0
 with open('calc.txt', 'r') as ff:
-    for line in ff:
+    for line in get_lines(file_name='calc.txt'):
         try:
             total += calculate(line)
         except ValueError as exc:
