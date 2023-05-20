@@ -62,10 +62,39 @@ def prime_numbers_generator(inc):
     return prime_number_iterator
 
 
-for number in prime_numbers_generator(inc=47):
-    print(number)
+def sum_lucky(list):
+    sum_right, sum_left = 0, 0
+    len_list = len(list) // 2
+    for i in range(len_list):
+        sum_left += list[i]
+        sum_right = sum_right + list.pop()
+    if sum_right == sum_left:
+        return True
+    else:
+        return False
 
-# Часть 3
+
+def lucky(num):
+    list_num = [int(i) for i in str(num)]
+    if len(list_num) >= 2 and sum_lucky(list_num):
+        return True
+    return False
+
+def check_polindrom(list):
+    pass
+def polindrom(num):
+    list_num = [int(i) for i in str(num)]
+    if len(list_num) >= 2 and sum_polindrom(list_num):
+        return True
+    return False
+
+for number in prime_numbers_generator(inc=10000):
+    if lucky(number):
+        print(f'{number} счастливое число')
+    if polindrom(number):
+        print(f'{number} полиндром ')
+
+    # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
 # 1) "счастливое" в обыденном пониманиии - сумма первых цифр равна сумме последних
 #       Если число имеет нечетное число цифр (например 727 или 92083),
