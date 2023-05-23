@@ -80,17 +80,26 @@ def lucky(num):
         return True
     return False
 
+
 def check_polindrom(list):
-    pass
-def polindrom(num):
-    list_num = [int(i) for i in str(num)]
-    if len(list_num) >= 2 and sum_polindrom(list_num):
+    begin_num = list.pop(0)
+    end_num = list.pop()
+    if begin_num == end_num:
+        if len(list) >= 2 :
+            return check_polindrom(list)
         return True
     return False
 
-for number in prime_numbers_generator(inc=10000):
-    if lucky(number):
-        print(f'{number} счастливое число')
+def polindrom(num):
+    list_num = [int(i) for i in str(num)]
+    if len(list_num) >= 2 and check_polindrom(list_num):
+        return True
+    return False
+
+
+for number in prime_numbers_generator(inc=100000):
+    # if lucky(number):
+    #     print(f'{number} счастливое число')
     if polindrom(number):
         print(f'{number} полиндром ')
 
