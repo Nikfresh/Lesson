@@ -24,6 +24,7 @@ except Blog.DoesNotExist:
     print('нет такой записи блога')
 
 
+
 # или для pygame (движок диплома)
 import pygame
 

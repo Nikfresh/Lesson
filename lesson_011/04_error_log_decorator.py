@@ -8,9 +8,22 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
-    pass
-    # TODO здесь ваш код
+def log_errors(file_name_save):
+    def sur(func):
+        def surrogate(*args, **kwargs):
+            print('эdkjndijfn')
+            try:
+                result = func(*args, **kwargs)
+            except Exception as exc:
+                name_f = func.__name__
+                string = f'{name_f} {exc}\n'
+                with open(file_name_save, 'a', encoding='utf8') as file_w:
+                    file_w.write(string)
+                raise
+            return result
+
+        return surrogate
+    return sur
 
 
 # Проверить работу на следующих функциях
@@ -19,7 +32,7 @@ def perky(param):
     return param / 0
 
 
-@log_errors
+@log_errors('function_errors.log')
 def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
