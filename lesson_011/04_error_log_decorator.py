@@ -15,8 +15,9 @@ def log_errors(file_name_save):
             try:
                 result = func(*args, **kwargs)
             except Exception as exc:
-                name_f = func.__name__
-                string = f'{name_f} {exc}\n'
+                name_exc = exc.__class__
+                name_f = str(func.__name__)
+                string = f'{name_f}|||{args,kwargs}|||{name_exc}|||{exc}\n'
                 with open(file_name_save, 'a', encoding='utf8') as file_w:
                     file_w.write(string)
                 raise
@@ -27,7 +28,7 @@ def log_errors(file_name_save):
 
 
 # Проверить работу на следующих функциях
-@log_errors
+@log_errors('function_errors.log')
 def perky(param):
     return param / 0
 
