@@ -11,7 +11,6 @@
 def log_errors(file_name_save):
     def sur(func):
         def surrogate(*args, **kwargs):
-            print('эdkjndijfn')
             try:
                 result = func(*args, **kwargs)
             except Exception as exc:
