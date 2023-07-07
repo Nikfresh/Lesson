@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from html.parser import HTMLParser
+from html.entities import name2codepoint
+from urllib.request import urlopen
 
 # Задача: проверить у какого сайта "тяжелее" главная страница.
 # - получить html
@@ -6,19 +9,40 @@
 # - подсчитать общий размер этих файлов
 # - вывести на консоль результаты
 
+sites = [
+    # 'https://www.fl.ru',
+    # 'https://stepik.org/',
+    'https://www.freelancejob.ru/',
+    'https://kwork.ru',
+    'https://mega.io/',
+    'https://www.all-light-media.ru/',
+]
+
+
+class MyHTMLParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        if tag != 'link':
+            return
+        print("Start tag:", tag,flush=True)
+        for attr in attrs:
+            print("     attr:", attr,flush=True)
+
+
+for url in sites:
+    res = urlopen(url)
+    html_data = res.read()
+    html_data = html_data.decode('utf-8')
+    total_bytes = len(html_data)
+    parser = MyHTMLParser()
+    parser.feed(html_data)
+
+'''
 import requests
 
 from extractor import LinkExtractor
 from utils import time_track
 
-sites = [
-    'https://www.fl.ru',
-    'https://www.weblancer.net/',
-    'https://www.freelancejob.ru/',
-    'https://kwork.ru',
-    'https://work-zilla.com/',
-    'https://iklife.ru/udalennaya-rabota-i-frilans/poisk-raboty/vse-samye-luchshie-sajty-i-birzhi-v-internete.html',
-]
+
 
 
 class PageSizer:
@@ -63,3 +87,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+'''

@@ -48,6 +48,38 @@ class PrimeNumbers:
     def __call__(self, n):
         return self
 
+    def sum_lucky(list):
+        sum_right, sum_left = 0, 0
+        len_list = len(list) // 2
+        for i in range(len_list):
+            sum_left += list[i]
+            sum_right = sum_right + list.pop()
+        if sum_right == sum_left:
+            return True
+        else:
+            return False
+
+    def lucky(num):
+        list_num = [int(i) for i in str(num)]
+        if len(list_num) >= 2 and sum_lucky(list_num):
+            return True
+        return False
+
+    def check_polindrom(list):
+        begin_num = list.pop(0)
+        end_num = list.pop()
+        if begin_num == end_num:
+            if len(list) >= 2:
+                return check_polindrom(list)
+            return True
+        return False
+
+    def polindrom(num):
+        list_num = [int(i) for i in str(num)]
+        if len(list_num) >= 2 and check_polindrom(list_num):
+            return True
+        return False
+
 
 # prime_number_iterator = PrimeNumbers(n=10000)
 # for number in prime_number_iterator:
@@ -62,39 +94,7 @@ def prime_numbers_generator(inc):
     return prime_number_iterator
 
 
-def sum_lucky(list):
-    sum_right, sum_left = 0, 0
-    len_list = len(list) // 2
-    for i in range(len_list):
-        sum_left += list[i]
-        sum_right = sum_right + list.pop()
-    if sum_right == sum_left:
-        return True
-    else:
-        return False
 
-
-def lucky(num):
-    list_num = [int(i) for i in str(num)]
-    if len(list_num) >= 2 and sum_lucky(list_num):
-        return True
-    return False
-
-
-def check_polindrom(list):
-    begin_num = list.pop(0)
-    end_num = list.pop()
-    if begin_num == end_num:
-        if len(list) >= 2 :
-            return check_polindrom(list)
-        return True
-    return False
-
-def polindrom(num):
-    list_num = [int(i) for i in str(num)]
-    if len(list_num) >= 2 and check_polindrom(list_num):
-        return True
-    return False
 
 
 for number in prime_numbers_generator(inc=100000):
