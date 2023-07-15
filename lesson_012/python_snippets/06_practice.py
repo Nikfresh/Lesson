@@ -19,22 +19,40 @@ sites = [
 ]
 
 
-class MyHTMLParser(HTMLParser):
-    def handle_starttag(self, tag, attrs):
-        if tag != 'link':
-            return
-        print("Start tag:", tag,flush=True)
-        for attr in attrs:
-            print("     attr:", attr,flush=True)
+class LinkExtraktor(HTMLParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+        self.links = []
 
+    def handle_starttag(self, tag, attrs):
+        if tag not in ('link','script',):
+            return
+        attrs = dict(attrs)
+        if tag == 'link':
+            if 'rel' in attrs and attrs['rel'] == 'stylesheet' and 'href' in attrs:
+                print('find  href',attrs['rel'],'_________',attrs['href'])
+                self.links.append(attrs['href'])
+            if 'rel' in attrs and attrs['rel'] == 'stylesheet' and 'data-href' in attrs:
+                print('find_______data-href',attrs['rel'],'_________',attrs['data-href'])
+                self.links.append(attrs['data-href'])
+        elif tag == 'script':
+            if 'src' in attrs :
+                print('find  src',attrs['src'],'__^^^^^^^^^^___',attrs['src'])
+                self.links.append(attrs['src'])
 
 for url in sites:
     res = urlopen(url)
     html_data = res.read()
-    html_data = html_data.decode('utf-8')
+    html_data = html_data.decode('ISO-8859–1')
     total_bytes = len(html_data)
-    parser = MyHTMLParser()
-    parser.feed(html_data)
+    extraktor = LinkExtraktor()
+    extraktor.feed(html_data)
+    print(extraktor.links)
+    for link in extraktor.links:
+        res = urlopen(link)
+        extra_data = res.read()
+        extra_data = extra_data.decode('ISO-8859–1')
+        total_bytes = len(extra_data)
 
 '''
 import requests
