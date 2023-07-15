@@ -9,7 +9,7 @@
 def digits(*args):
     total = 1
     for number in args:
-        total *= number ** 5000
+        total += number ** 2
     return len(str(total))
 
 
