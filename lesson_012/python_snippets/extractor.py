@@ -2,7 +2,7 @@ from html.parser import HTMLParser
 from urllib.parse import urljoin
 
 
-class LinkExtraktor(HTMLParser):
+class LinkExtractor(HTMLParser):
     def __init__(self, base_url, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.links = []
