@@ -5,21 +5,12 @@
 # - узнать какие CSS и JS файлы нужны для отображения
 # - подсчитать общий размер этих файлов
 # - вывести на консоль результаты
-
-import threading
+import multiprocessing
 
 import requests
 
 from extractor import LinkExtractor
 from utils import time_track
-
-# -*- coding: utf-8 -*-
-
-# Задача: проверить у какого сайта "тяжелее" главная страница.
-# - получить html
-# - узнать какие CSS и JS файлы нужны для отображения
-# - подсчитать общий размер этих файлов
-# - вывести на консоль результаты
 
 sites = [
     'https://www.fl.ru',
@@ -31,12 +22,14 @@ sites = [
 ]
 
 
-class PageSizer(threading.Thread):
-    def __init__(self, url, go_ahead=True, *args, **kwargs):
+class PageSizer(multiprocessing.Process):
+
+    def __init__(self, url, collector, go_ahead=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.url = url
         self.go_ahead = go_ahead
         self.total_bytes = 0
+        self.collector = collector
 
     def run(self):
         self.total_bytes = 0
@@ -45,16 +38,18 @@ class PageSizer(threading.Thread):
             return
         self.total_bytes += len(html_data)
         if self.go_ahead:
-            extraktor = LinkExtractor(base_url=self.url)
-            extraktor.feed(html_data)
-            sizers = [PageSizer(url=link, go_ahead=False) for link in extraktor.links]
+            extractor = LinkExtractor(base_url=self.url)
+            extractor.feed(html_data)
+            collector = multiprocessing.Queue()
+            sizers = [PageSizer(url=link, go_ahead=False, collector=collector) for link in extractor.links]
             for sizer in sizers:
                 sizer.start()
             for sizer in sizers:
                 sizer.join()
-            for sizer in sizers:
-                self.total_bytes += sizer.total_bytes
-
+            while not collector.empty():
+                data = collector.get()
+                self.total_bytes += data['total_bytes']
+        self.collector.put(dict(url=self.url, total_bytes=self.total_bytes))
 
     def _get_html(self, url):
         try:
@@ -62,20 +57,23 @@ class PageSizer(threading.Thread):
             res = requests.get(url)
         except Exception as exc:
             print(exc)
-            return
         else:
             return res.text
 
 
 @time_track
 def main():
-    sizers = [PageSizer(url=url) for url in sites]
+    collector = multiprocessing.Queue()
+    sizers = [PageSizer(url=url, collector=collector) for url in sites]
+
     for sizer in sizers:
         sizer.start()
     for sizer in sizers:
         sizer.join()
-    for sizer in sizers:
-        print(f'For url {sizer.url} need download {sizer.total_bytes / 1024} Kb')
+
+    while not collector.empty():
+        data = collector.get()
+        print(f"For url {data['url']} need download {data['total_bytes']//1024} Kb ({data['total_bytes']} bytes)")
 
 
 if __name__ == '__main__':
